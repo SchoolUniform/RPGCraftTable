@@ -1,0 +1,35 @@
+#蓝图中使用的标签,冒号后面可以自定义
+#在修改蓝图的lore时可以使用变量&name,&time,&times来代替相对应的内容(仅文件中修改)
+#使用格式:&name: 配方名,&time: 时间,&times 次数
+blueprintTable:
+  - name:蓝图名
+  - time:制造时间
+  - times:使用次数
+
+#自定义Workbench的摆放方式 Main为被右击的方块 left为左边 Right为右边 UP为上方 Down为下方 Front为前面 Behind为后面  写方块名的时候注意大写,并且当不需要那一边的话写上 Null 
+#title为 自定义合成界面的标题
+#默认主方块是工作台 左边方块是书架 右边方块是工作台 上方是书架
+#blueprint下面为默认的蓝图格式(如果可以你可以自己创建对应的蓝图)
+#type为蓝图物品的类型,damage为(这个真的不好解释) 
+#name为默认蓝图的名字
+#lore下面为蓝图物品下面的lore, 第一行必须标明蓝图对应的蓝图名称,第二行为该配方的的制造时间,第三行可要可不要,为蓝图可使用的次数
+#lore方面有几个变量,分别是&name,&time,&times,%NAME%,%TIME%
+#%NAME%为蓝图名 %TIME%为该蓝图对应的配方制造所需要的时间
+#第一行与第二行为固定格式,其他行可以随便写点什么,可以自己添加新的行, 依葫芦画瓢即可
+workbench:
+  title: 工作台
+  main: WORKBENCH
+  left: BOOKSHELF
+  right: WORKBENCH
+  up: BOOKSHELF
+  down: Null
+  front: Null
+  behind: Null
+  blueprint:
+    type: MAP
+    damage: 0
+    name: "§3§lBlueprint"
+    lore:
+      - '§b&name:§b§l %NAME%'
+      - '§b&time: §b§l%TIME%秒'
+      - '§7&times: §7§l10'

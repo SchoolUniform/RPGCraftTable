@@ -1,0 +1,12 @@
+name: RPGCraftTable
+main: com.outlook.schooluniformsama.RPGCraftTable
+version: 0.0.4
+author: School_Uniform
+commands:
+  rpgct:
+      description: RPGCraftTable
+      usage: /<command> cwp <name> <time> | /<command> getblueprint <name> | /<command> wr <name>
+permissions: 
+  RPGCraftTable.admin:
+    description: 允许你可以使用管理员命令
+    default: op
