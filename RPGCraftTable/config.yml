@@ -1,10 +1,37 @@
+Language: zh_CN
+
+Prefix: §3§l［RPGCraftTable］ => §ｆ
 #蓝图中使用的标签,冒号后面可以自定义
 #在修改蓝图的lore时可以使用变量&name,&time,&times来代替相对应的内容(仅文件中修改)
 #使用格式:&name: 配方名,&time: 时间,&times 次数
-blueprintTable:
-  - name:蓝图名
-  - time:制造时间
-  - times:使用次数
+BlueprintLabel:
+  - RecipeName:Name
+  - FileName:FileName
+  - Times:Times
+  - Type:Type
+  - WorkbenchType:Workbench
+  - FurnaceType:Furnace
+
+#Range: 长宽高
+HeatSource:
+  L: 5
+  W: 5
+  H: 5
+  DistanceEffect: 0.25
+  Blocks:
+    - FIRE:0.3
+    - LAVA:0.5
+    - TORCH:0.1
+    - FLOWING_LAVA:0.5
+    - STATIONARY_LAVA:0.5
+    - LAVA_BUCKET:0.5
+    - WATER:-0.3
+    - FLOWING_WATER:-0.3
+    - PACKED_ICE:-0.3
+    - ICE:-0.3
+    - FROSTED_ICE:-0.3
+    - SNOW_LAYER:-0.2
+    - SNOW:-0.5
 
 #自定义Workbench的摆放方式 Main为被右击的方块 left为左边 Right为右边 UP为上方 Down为下方 Front为前面 Behind为后面  写方块名的时候注意大写,并且当不需要那一边的话写上 Null 
 #title为 自定义合成界面的标题
@@ -22,6 +49,24 @@ workbench:
   left: BOOKSHELF
   right: WORKBENCH
   up: BOOKSHELF
+  down: Null
+  front: Null
+  behind: Null
+  blueprint:
+    type: MAP
+    damage: 0
+    name: "§3§lBlueprint"
+    lore:
+      - '§b&name:§b§l %NAME%'
+      - '§b&time: §b§l%TIME%秒'
+      - '§7&times: §7§l10'
+      
+furnace:
+  title: 熔炉
+  main: WORKBENCH
+  left: WORKBENCH
+  right: WORKBENCH
+  up: WORKBENCH
   down: Null
   front: Null
   behind: Null

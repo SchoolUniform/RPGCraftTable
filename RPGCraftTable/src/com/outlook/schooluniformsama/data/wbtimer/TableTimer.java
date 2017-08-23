@@ -16,7 +16,7 @@ public class TableTimer {
 	protected WorkbenchType type;
 	
 	protected int x,y,z;
-	protected int time;
+	protected int time=0;
 	protected int needTime;
 	
 	public TableTimer(String playerName,WorkbenchType type,String worldName,int x,int y,int z){
@@ -41,6 +41,14 @@ public class TableTimer {
 	
 	public Location getLocation(){
 		return new Location(Bukkit.getWorld(worldName), x, y, z);
+	}
+	
+	public WorkbenchTimer toWorkbenchTimer(){
+		return new WorkbenchTimer(playerName, worldName, x, y, z);
+	}
+	
+	public FurnaceTimer toFurnaceTimer(){
+		return new FurnaceTimer(playerName, worldName, x, y, z);
 	}
 	
 	public Player getPlayer(){

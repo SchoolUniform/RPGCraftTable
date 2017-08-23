@@ -13,6 +13,23 @@ public class Util{
 		return b.getWorld().getName()+b.getX()+b.getY()+b.getZ();
 	}
 	
+	public static String keepXDecimalPlaces(int x,double d){
+		return String.format("%."+x+"f", d);
+	}
+	
+	public static String randomColor(){
+		int a=(int) (Math.random()*15);
+		switch(a){
+			case 10:return "a";
+			case 11:return "b";
+			case 12:return "c";
+			case 13:return "d";
+			case 14:return "e";
+			case 15:return "f";
+			default: return a+"";
+		}
+	}
+
     public static String removeColour(String input){
         return input.replaceAll("&r", "")
 					        .replaceAll("&o", "")

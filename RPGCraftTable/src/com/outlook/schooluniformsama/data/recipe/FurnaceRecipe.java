@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.outlook.schooluniformsama.data.Items;
 import com.outlook.schooluniformsama.data.MainData;
 import com.outlook.schooluniformsama.gui.FurnaceGUI;
 
@@ -34,13 +35,21 @@ public class FurnaceRecipe extends Recipe{
 		
 	}
 	
+	public FurnaceRecipe(String name,String fileName,int needTime,int saveTime,double minTemperature,double maxTemperature){
+		super(name, fileName, WorkbenchType.FURNACE,needTime);
+		this.saveTime=saveTime;
+		this.minTemperature=minTemperature;
+		this.maxTemperature=maxTemperature;
+		
+	}
+	
 	public boolean save(){
 		YamlConfiguration recipe;
 		 File f=new File(MainData.DATAFOLDER+File.separator+"recipe"+File.separator+"furnace"+File.separator+fileName+".yml");
 		if(!f.exists())try {f.createNewFile();} catch (IOException e1) {return false;}
 		
 		recipe=YamlConfiguration.loadConfiguration(f);
-		recipe.set(name+".tpye", type);
+		recipe.set(name+".tpye", type.name());
 		recipe.set(name+".name", name);
 		recipe.set(name+".fileName", fileName);
 		recipe.set(name+".needTime", needTime);
@@ -77,17 +86,13 @@ public class FurnaceRecipe extends Recipe{
 				 recipe.getStringList(name+".shape"), materials, product);
 	}
 	
-	public static boolean createFireCraftTableRecipe(Inventory inv){
+	public static boolean createFurnaceRecipe(Inventory inv,FurnaceRecipe fr){
 		short index=0;
 		char charArray[]="ABCDEFGHIJKLMNOP".toCharArray();
-		int time=Integer.parseInt(inv.getItem(0).getItemMeta().getDisplayName().split(":")[1]);
 		String s="";
 		HashMap<ItemStack,Character> m=new HashMap<>();
 		ItemStack is=inv.getItem(FurnaceGUI.mSlot.get(0));
-		String name=inv.getItem(0).getItemMeta().getDisplayName().split(":")[0];
-		String value=inv.getItem(0).getItemMeta().getDisplayName();//name;time;maxtem;tem
-		String fileName=inv.getItem(0).getItemMeta().getDisplayName().split(":")[2];
-		if(new File(MainData.DATAFOLDER+File.separator+"recipe"+File.separator+"furnace"+File.separator+fileName+".yml").exists())
+		if(new File(MainData.DATAFOLDER+File.separator+"recipe"+File.separator+"furnace"+File.separator+fr.fileName+".yml").exists())
 			return false;
 		
 		if(is!=null)
@@ -117,14 +122,15 @@ public class FurnaceRecipe extends Recipe{
 		for(Entry<ItemStack, Character> entity:m.entrySet())
 			m2.put(entity.getValue(), entity.getKey());
 		
-		FurnaceRecipe wr=new FurnaceRecipe(time,Double.parseDouble(value.split(":")[3]),
-				name, Arrays.asList(s.substring(0,3),s.substring(3, 6)),m2, new ItemStack[]{inv.getItem(FurnaceGUI.pSlot.get(0)),
+		FurnaceRecipe wr=new FurnaceRecipe(fr.name ,fr.fileName ,fr.needTime,fr.saveTime,fr.minTemperature,fr.maxTemperature,
+				Arrays.asList(s.substring(0,3),s.substring(3, 6)),m2, new ItemStack[]{inv.getItem(FurnaceGUI.pSlot.get(0)),
 						inv.getItem(FurnaceGUI.pSlot.get(1)),inv.getItem(FurnaceGUI.pSlot.get(2))});
 		return wr.save();
 		
 	}
 	
-	public FurnaceRecipe containsShape(Inventory inv){
+	public boolean containsShape(Inventory inv){
+		/*
 		short index=0;
 		char charArray[]="ABCDEFGHIJKLMNOP".toCharArray();
 		String s="";
@@ -159,7 +165,25 @@ public class FurnaceRecipe extends Recipe{
 		for(Entry<ItemStack, Character> entity:m.entrySet())
 			m2.put(entity.getValue(), entity.getKey());
 		if(!materials.equals(m2))return null;
-		return this;
+		return this;*/
+		short index=0;
+		for(String s:shape)
+			for(char c:s.toCharArray()){
+				if(c==' ')
+					if(inv.getItem(FurnaceGUI.mSlot.get(index++))==null)
+						continue;
+					else 
+						return false;
+				else{
+					ItemStack is=inv.getItem(FurnaceGUI.mSlot.get(index++));
+					if(is==null)return false;
+					if(is.equals(materials.get(c)))
+						continue;
+					else 
+						return false;
+				}
+			}
+		return true;
 	}
 	
 	public boolean isTrue(Inventory inv){
@@ -196,22 +220,24 @@ public class FurnaceRecipe extends Recipe{
 		index=0;
 		while(index!=3)
 			inv.setItem(FurnaceGUI.pSlot.get(index), product[index++]);
+		inv.setItem(4, Items.createPItem((short)0, " "));
 		return inv;
 	}
 	
 	public static double getBlocks(Location l){
+		//5x5x5
 		double _tem=0;
-		int x=l.getBlockX()+2;
-		int y=l.getBlockY()+2;
-		int z=l.getBlockZ()+2;
+		int x=l.getBlockX()+(int)((MainData.L-1)*0.5);
+		int y=l.getBlockY()+(int)((MainData.H-1)*0.5);
+		int z=l.getBlockZ()+(int)((MainData.W-1)*0.5);
 		
-		for(int sx=x-4;sx<x;sx++)
-			for(int sy=y-4;sy<y;sy++)
-				for(int sz=z-4;sz<z;sz++){
+		for(int sx=x-(MainData.L-1);sx<x;sx++)
+			for(int sy=y-(MainData.H-1);sy<y;sy++)
+				for(int sz=z-(MainData.W-1);sz<z;sz++){
 					Block temp=l.getWorld().getBlockAt(sx, sy, sz);
 					if(MainData.HEATSOURCE.containsKey(temp.getType().name()))
 						_tem+=MainData.HEATSOURCE.get(temp.getType().name())*Math.pow(
-								1-MainData.HEATSOURCE.get("DistanceEffect"), Math.sqrt(Math.pow(sx-x, 2)+Math.pow(
+								1-MainData.DISTANCEEFFECT, Math.sqrt(Math.pow(sx-x, 2)+Math.pow(
 										sy-y, 2)+Math.pow(sz-z, 2)));
 				}
 		return _tem;
@@ -256,7 +282,5 @@ public class FurnaceRecipe extends Recipe{
 	public void setProduct(ItemStack[] product) {
 		this.product = product;
 	}
-	
-	
-	
+
 }

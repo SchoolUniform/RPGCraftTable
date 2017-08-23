@@ -7,108 +7,112 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.outlook.schooluniformsama.data.FurnaceRecipe;
 import com.outlook.schooluniformsama.data.Items;
-import com.outlook.schooluniformsama.data.PluginRPGCT;
+import com.outlook.schooluniformsama.data.MainData;
+import com.outlook.schooluniformsama.data.recipe.FurnaceRecipe;
 import com.outlook.schooluniformsama.data.wbtimer.FurnaceTimer;
+import com.outlook.schooluniformsama.utils.Msg;
+import com.outlook.schooluniformsama.utils.Util;
 
-public class FurnaceGUI extends PluginRPGCT{
+public class FurnaceGUI{
 	public static final List<Integer> mSlot=Arrays.asList(12,13,14,21,22,23);
 	public static final List<Integer> pSlot=Arrays.asList(39,40,41);
 	public static final List<Integer> tSlot=Arrays.asList(16,25,34,43);
 	public static final List<Integer> passSlot=Arrays.asList(10,19,28,37);
 	
-	//¥¥Ω®ƒ¨»œµƒΩÁ√Ê
+	//ÂàõÂª∫ÈªòËÆ§ÁöÑÁïåÈù¢
 	private static Inventory createDefGUI(String title){
 		Inventory inv = Bukkit.createInventory(null,54 , title);
 		for(int i=0;i<54;i++)
 			if(!mSlot.contains(i)&&!pSlot.contains(i)&&!tSlot.contains(i)&&!passSlot.contains(i))
-				inv.setItem(i, Items.createPItem((short)15, ""));
+				inv.setItem(i, Items.createPItem((short)15, " "));
 		for(int i:passSlot)
-			inv.setItem(i, Items.createPItem((short)0, ""));
+			inv.setItem(i, Items.createPItem((short)0, " "));
 		for(int i:tSlot)
-			inv.setItem(i, Items.createPItem((short)0, ""));
+			inv.setItem(i, Items.createPItem((short)0, " "));
 		inv.setItem(4, null);
 		return inv;
 	}
 	
-	public static Inventory createFCTGUI(){
-		Inventory inv=createDefGUI(rpgct.getFurnaceItems()[7]);
-		inv.setItem(49, Items.createPItem((short) 14, "°Ïb°Ïl==>°Ïc°Ïlø™ º÷∆‘Ï°Ïb°Ïl<=="));
+	public static Inventory createFurnaceGUI(){
+		Inventory inv=createDefGUI(MainData.FURNACEITEMS[7]);
+		inv.setItem(49, Items.createPItem((short) 14, Msg.getMsg("FurnaceStart", false)));
 		return inv;
 	}
 	
-	public static Inventory openFCTGUI(FurnaceTimer ft){
-		Inventory inv=createDefGUI(rpgct.getFurnaceItems()[7]+"°Ï3°Ïl*");
-		return checkHeatSource(FurnaceRecipe.load(rpgct.getFCT(itemKey.getItemMeta().getDisplayName())[1].split(":")[0],
-				rpgct.getFCT(itemKey.getItemMeta().getDisplayName())[1].split(":")[1]).setInv(inv));
+	public static Inventory openFurnaceGUI(FurnaceTimer ft){
+		Inventory inv=createDefGUI(MainData.FURNACEITEMS[7]+"¬ß3¬ßl*");
+		return checkHeatSource(FurnaceRecipe.load(ft.getRecipeName(),ft.getFileName()).setInv(inv),ft);
 	}
 	
-	public static Inventory createFCTPGUI(ItemStack itemKey){
-		Inventory inv=createDefGUI(rpgct.getFurnaceItems()[7]+"*");
-		inv.setItem(0, itemKey);
-		inv.setItem(49, Items.createPItem((short) 14, "°Ïb°Ïl==>°Ïc°Ïl±£¥Ê°Ïb°Ïl<=="));
+	public static Inventory createFurnaceMakerGUI(){
+		Inventory inv=createDefGUI(MainData.FURNACEITEMS[7]+"*");
+		inv.setItem(49, Items.createPItem((short) 14, Msg.getMsg("SaveRecipe", false)));
 		return inv;
-	}
-	
-	public static double checkHeatSource(String value[]){
-		return FurnaceRecipe.getBlocks(Bukkit.getServer().getWorld(value[5]).
-				getBlockAt(Integer.parseInt(value[6]),Integer.parseInt(value[7]),Integer.parseInt(value[8])).getLocation());
 	}
 	
 	public static Inventory checkHeatSource(Inventory inv,FurnaceTimer ft){
-		
+		ItemStack temp;
 		if(ft.isBad()){
-			
+			for(int i:passSlot)
+				inv.setItem(i,  Items.createPItem((short)12, Msg.getMsg("FurnaceFailed", false)));
+			inv.setItem(49,   Items.createPItem((short)5, Msg.getMsg("WorkbenchProgress2", false)));
+			return inv;
 		}
 		
-		
-		
-		
-		
-		
-		String value[] =rpgct.getFCT(inv.getItem(0).getItemMeta().getDisplayName());
-		double tem=Double.parseDouble(value[3])+checkHeatSource(value);
-		FurnaceRecipe fctr=FurnaceRecipe.load(value[1].split(":")[0],value[1].split(":")[1]);
-		double tem2= fctr.getTemperature();
-		
-		if(tem2>=0){
-			double x=tem/tem2;
-			if(x>0)
-				inv.setItem(43,  Items.createPItem((short)1, "°Ïe°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
-			if(x>0.25)
-				inv.setItem(34,  Items.createPItem((short)1, "°Ïe°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
-			if(x>0.5)
-				inv.setItem(25,  Items.createPItem((short)1, "°Ïe°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
-			if(x>0.75)
-				inv.setItem(16,  Items.createPItem((short)1, "°Ïe°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
+		double nowTemperature = FurnaceRecipe.getBlocks(ft.getLocation());
+		double pass=(ft.getExtraTemperature()+nowTemperature)/ft.getMinTemperature();
+		if(ft.getMinTemperature()>0){
+			temp= Items.createPItem((short)1, Msg.getMsg("FurnaceWorkProgress+", new String[]{"%temperature%","%minTemperature%"},
+					new String[]{Util.keepXDecimalPlaces(2,nowTemperature),Util.keepXDecimalPlaces(2, ft.getMinTemperature())},false));
+			if(pass>0)
+				inv.setItem(43,temp );
+			if(pass>0.25)
+				inv.setItem(34,temp);
+			if(pass>0.5)
+				inv.setItem(25,temp);
+			if(pass>0.75)
+				inv.setItem(16,temp);
 		}else{
-			double x=tem/tem2;
-			if(x>0.25)
-				inv.setItem(43,  Items.createPItem((short)3, "°Ï3°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
-			if(x>0.5)
-				inv.setItem(34,  Items.createPItem((short)3, "°Ï3°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
-			if(x>0.75)
-				inv.setItem(25,  Items.createPItem((short)3, "°Ï3°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
-			if(x>1)
-				inv.setItem(16,  Items.createPItem((short)3, "°Ï3°ÏlŒ¬∂»: "+_2f(tem)+"°Ê - "+_2f(x*100)+"%"));
+			temp= Items.createPItem((short)3, Msg.getMsg("FurnaceWorkProgress-", new String[]{"%temperature%","%minTemperature%"},
+					new String[]{Util.keepXDecimalPlaces(2,nowTemperature),Util.keepXDecimalPlaces(2, ft.getMinTemperature())},false));
+			if(pass>0)
+				inv.setItem(43,temp );
+			if(pass>0.25)
+				inv.setItem(34,temp);
+			if(pass>0.5)
+				inv.setItem(25,temp);
+			if(pass>0.75)
+				inv.setItem(16,temp);
 		}
-		int time=Integer.parseInt(value[2]);
-		double x2=(double)time/fctr.getTime();
-		if(x2>=0)
-			inv.setItem(37,  Items.getPlaceholder10((short)5, (int)(x2*100)));
-		if(x2>=0.5)
-			inv.setItem(28,  Items.getPlaceholder10((short)5, (int)(x2*100)));
-		if(x2>=0.75)
-			inv.setItem(19,  Items.getPlaceholder10((short)5, (int)(x2*100)));
-		if(x2>=1)
-			inv.setItem(10,  Items.getPlaceholder10((short)5, (int)(x2*100)));
-		if(x2>=1)
-			inv.setItem(49, Items.createPItem((short) 14, "°Ïb°Ïl==>°Ïc°ÏlOK°Ïb°Ïl<=="));
+		//Time
+		pass=ft.getTime()/(double)ft.getNeedTime();
+		temp=Items.createPItem((short)5, Msg.getMsg("FurnaceTimeProgress", new String[]{"%timeProgress%","%time%"},
+				new String[]{Util.keepXDecimalPlaces(2,pass*100),(ft.getNeedTime()-ft.getTime())+""},false));
+		if(pass>=0)
+			inv.setItem(37, temp );
+		if(pass>=0.5)
+			inv.setItem(28,  temp);
+		if(pass>=0.75)
+			inv.setItem(19,  temp);
+		if(pass>=1){
+			inv.setItem(10,   temp);
+			inv.setItem(49,   Items.createPItem((short)5, Msg.getMsg("WorkbenchProgress2", false)));
+		}
+		//SaveTime
+		if(ft.getTime()>ft.getNeedTime()){
+			pass=ft.getTime()/(double)(ft.getNeedTime()+ft.getSaveTime());
+			temp=Items.createPItem((short)12, Msg.getMsg("FuranceSaveProgress", new String[]{"%time%"},
+					new String[]{(ft.getNeedTime()+ft.getSaveTime()-ft.getTime())+""},false));
+			if(pass>=0)
+				inv.setItem(37,  temp);
+			if(pass>=0.5)
+				inv.setItem(28,  temp);
+			if(pass>=0.75)
+				inv.setItem(19,  temp);
+			if(pass>=1)
+				inv.setItem(10,  temp);
+		}
 		return inv;
-	}
-	
-	private static String _2f(double d){
-		return String.format("%.2f", d);
 	}
 }

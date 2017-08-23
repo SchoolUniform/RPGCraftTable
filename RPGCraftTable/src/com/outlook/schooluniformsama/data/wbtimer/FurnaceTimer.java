@@ -1,5 +1,8 @@
 package com.outlook.schooluniformsama.data.wbtimer;
 
+import org.bukkit.Bukkit;
+
+import com.outlook.schooluniformsama.data.MainData;
 import com.outlook.schooluniformsama.data.recipe.FurnaceRecipe;
 import com.outlook.schooluniformsama.data.recipe.WorkbenchType;
 
@@ -21,12 +24,17 @@ public class FurnaceTimer extends TableTimer{
 		this.isBad=isBad;
 	}
 	
+	public void loadData(double extra,boolean isBad,int time){
+		this.time=time;
+		this.extraTemperature=extra;
+		this.isBad=isBad;
+	}
+	
 	public FurnaceRecipe getRecipe(){
 		return FurnaceRecipe.load(recipeName, fileName);
 	}
 	
 	public void start(FurnaceRecipe fr,double last){
-		this.time=0;
 		this.needTime=fr.getNeedTime();
 		this.fileName=fr.getFileName();
 		this.recipeName=fr.getName();
@@ -38,10 +46,14 @@ public class FurnaceTimer extends TableTimer{
 	
 	@Override
 	public void subTime() {
+		
+		if(!Bukkit.getWorld(worldName).getBlockAt(x, y, z).getType().name().equalsIgnoreCase(MainData.FURNACEITEMS[0]))
+			return;
+		
 		double nowTemperature = FurnaceRecipe.getBlocks(getLocation());
 		extraTemperature+=lastTemperature-nowTemperature;
-		if(minTemperature>=0){		
-			//当额外温度小于0时对额外温度进行修正
+		if(minTemperature>=0){
+			
 			if(extraTemperature<0)
 				extraTemperature=0;
 			else if(extraTemperature>0)

@@ -36,13 +36,17 @@ public class WorkbenchRecipe extends Recipe{
 		this.product = product;
 	}
 	
+	public WorkbenchRecipe(String name,String fileName,int needTime){
+		super(name, fileName, WorkbenchType.WORKBENCH,needTime);
+	}
+	
 	public boolean save(){
 		YamlConfiguration recipe;
 		File f=new File(MainData.DATAFOLDER+File.separator+"recipe"+File.separator+"workbench"+File.separator+fileName+".yml");
 			if(!f.exists())
 				try {f.createNewFile();} catch (IOException e1) {return false;}
 		recipe=YamlConfiguration.loadConfiguration(f);
-		recipe.set(name+".tpye", type);
+		recipe.set(name+".tpye", type.name());
 		recipe.set(name+".name", name);
 		recipe.set(name+".fileName", fileName);
 		recipe.set(name+".needTime", needTime);
@@ -84,16 +88,13 @@ public class WorkbenchRecipe extends Recipe{
 	 * @param inv
 	 * @return
 	 */
-	public static boolean createRecipe(Inventory inv){
+	public static boolean createRecipe(Inventory inv,WorkbenchRecipe r){
 		short index=0;
 		char charArray[]="ABCDEFGHIJKLMNOP".toCharArray();
-		int time=Integer.parseInt(inv.getItem(0).getItemMeta().getDisplayName().split(";")[1]);
 		String s="";
 		HashMap<ItemStack,Character> m=new HashMap<>();
 		ItemStack is=inv.getItem(WorkbenchGUI.materials.get(0));
-		String name=inv.getItem(0).getItemMeta().getDisplayName().split(";")[0];
-		String fileName=inv.getItem(0).getItemMeta().getDisplayName().split(";")[2];
-		if(new File(MainData.DATAFOLDER+File.separator+"recipe"+File.separator+"workbench"+File.separator+fileName+".yml").exists())
+		if(new File(MainData.DATAFOLDER+File.separator+"recipe"+File.separator+"workbench"+File.separator+r.fileName+".yml").exists())
 			return false;
 		
 		if(is!=null){
@@ -126,7 +127,7 @@ public class WorkbenchRecipe extends Recipe{
 		for(Entry<ItemStack, Character> entity:m.entrySet())
 			m2.put(entity.getValue(), entity.getKey());
 		
-		WorkbenchRecipe wr=new WorkbenchRecipe(name, fileName,time, 
+		WorkbenchRecipe wr=new WorkbenchRecipe(r.name, r.fileName,r.needTime, 
 				Arrays.asList(s.substring(0,4),s.substring(4, 8),s.substring(8,12),s.substring(12,16)),m2, 
 				new ItemStack[]{inv.getItem(WorkbenchGUI.products.get(0)),inv.getItem(
 						WorkbenchGUI.products.get(1)),inv.getItem(WorkbenchGUI.products.get(2)),
@@ -167,7 +168,7 @@ public class WorkbenchRecipe extends Recipe{
 				}
 				inv.setItem(WorkbenchGUI.materials.get(index++), materials.get(c));
 			}
-		inv.setItem(16, Items.createPItem((short)0, "§7§l讨厌啦~不要总是看着人家啦~"));
+		inv.setItem(16, Items.createPItem((short)0, " "));
 		index=0;
 		while(index!=4)
 			inv.setItem(WorkbenchGUI.products.get(index), product[index++]);

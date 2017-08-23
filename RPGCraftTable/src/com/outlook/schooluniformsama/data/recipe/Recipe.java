@@ -17,6 +17,13 @@ public class Recipe {
 		this.shape=shape;
 		this.needTime=needTime;
 	}
+	
+	Recipe(String name,String fileName,WorkbenchType type,int needTime){
+		this.name=name;
+		this.fileName=fileName;
+		this.type=type;
+		this.needTime=needTime;
+	}
 
 	public int getNeedTime() {
 		return needTime;

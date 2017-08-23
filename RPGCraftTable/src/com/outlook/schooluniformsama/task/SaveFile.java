@@ -31,7 +31,7 @@ public class SaveFile implements Runnable{
 			dataC.set(entry.getKey()+".z", entry.getValue().getZ());
 			dataC.set(entry.getKey()+".fileName",entry.getValue().getFileName());
 			dataC.set(entry.getKey()+".recipeName", entry.getValue().getRecipeName());
-			dataC.set(entry.getKey()+".type", entry.getValue().getType());
+			dataC.set(entry.getKey()+".type", entry.getValue().getType().name());
 			dataC.set(entry.getKey()+".time", entry.getValue().getTime());
 			
 			switch(entry.getValue().getType()){
