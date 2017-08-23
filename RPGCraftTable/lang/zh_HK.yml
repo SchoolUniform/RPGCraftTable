@@ -1,0 +1,40 @@
+#zh_CN
+
+#Furnace GUI
+FurnaceStart: "§b§l==>§c§l開始鍛造§b§l<=="
+FurnaceFailed: "§4製作過程中,失敗了.."
+FurnaceWatcher1: "§e需要大於: %minTemperature%℃"
+FurnaceWatcher2: "§e需要小於: %minTemperature%℃"
+FurnaceWatcher3: "§b需要時間: %time% 秒"
+FurnaceFailedMsg: "§4製作過程中,失敗了..你什麽都沒有得到,,,"
+FurnaceWorkProgress+: "§e溫度: §e§l%temperature% §e℃ | 需要大於: §e§l%minTemperature%℃ §e才可以進行鍛造!"
+FurnaceWorkProgress-: "§e溫度: §e§l%temperature% §e℃ | 需要小於: §e§l%minTemperature%℃ §e才可以進行鍛造!"
+FurnaceTimeProgress: "§b製造進度: %timeProgress%% | 剩餘%time%秒製造完成"
+FuranceSaveProgress: "§7距離燒壞的時間還剩%time%秒"
+
+#Workbench GUI
+WorkbenchStart: "§b§l==>§c§l開始製造§b§l<=="
+WorkbenchUndone: "§4當前的物品還未製作完成!"
+WorkbenchProgress1: "§b已完成: %pass%%"
+WorkbenchProgress2: "§b物品已經製作完成!"
+
+#GUI Misc
+Watcher: "§2配方"
+Exception: "§4製作的時候出了一個錯誤!"
+SaveRecipe: "§b§l==>§c§l保存§b§l<=="
+NotFindBlueprint: "§4沒有發現你的藍圖!"
+WorkbenchIsUsing: "§c這個工作台正在被%player%使用中!"
+CreateRecipeFailed: "§4創建配方失敗!"
+TheBlueprintIsWrong: "§b放錯了藍圖或者原材料擺放的位置!"
+CreateRecipeSucceed: "§b創建配方成功!"
+
+#Command
+SaveData: "§e所有工作台數據保存成功!"
+IsNotPlayer: "§c這個指令只能由玩家執行"
+NoPermission: "§4你沒有該指令的權限"
+RecipeIsExists: "§4該配方已經存在了!"
+CommandSave: "§6手動保存所有工作台數據"
+CommandIsWrong: "§4指令參數不合法!"
+SubCommandNotFind: "§4找不到該指令"
+CreateFurnaceRecipeDes: "創建一個名為RecipeName的熔爐配方放入FileName文件,該配方需要在大於MinTemperature攝氏度小於MaxTemperature攝氏度狀態下燒製NeedTime完成,製造完成後超過了SaveTime物品就會燒製失敗"
+CreateWorkbenchRecipeDes: "創建一個名為RecipeName的工作台配方放入FileName文件,該配方需要NeedTime秒來完成製造"
