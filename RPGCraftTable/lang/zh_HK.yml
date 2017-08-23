@@ -15,7 +15,7 @@ FuranceSaveProgress: "§7距離燒壞的時間還剩%time%秒"
 #Workbench GUI
 WorkbenchStart: "§b§l==>§c§l開始製造§b§l<=="
 WorkbenchUndone: "§4目前物品還未製作完成!"
-WorkbenchProgress1: "§b已完成: %pass%%"
+WorkbenchProgress1: "§b製作進度: %pass%%"
 WorkbenchProgress2: "§b物品已經製作完成!"
 
 #GUI Misc
